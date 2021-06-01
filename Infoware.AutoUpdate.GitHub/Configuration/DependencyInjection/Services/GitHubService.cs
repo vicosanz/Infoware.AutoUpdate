@@ -38,7 +38,9 @@ namespace Infoware.AutoUpdate.GitHub.Services
             {
                 throw new Exception($"Error loading download url for {installer.FileName}");
             }
-            var targetFile = Path.Combine(Path.GetTempPath(), _options.Assembly.GetName().Name, installer.FileName);
+            var targetFolder = Path.Combine(Path.GetTempPath(), _options.Assembly.GetName().Name);
+            Directory.CreateDirectory(targetFolder);
+            var targetFile = Path.Combine(targetFolder, installer.FileName);
             var response = await _github.Connection.Get<object>(new Uri(url), new Dictionary<string, string>(), "application/octet-stream");
             File.Delete(targetFile);
             await File.WriteAllBytesAsync(targetFile, (byte[])response.HttpResponse.Body);
